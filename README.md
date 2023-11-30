@@ -1,5 +1,3 @@
-# expenses-management
-
 ### Features
 - Real-Time user validation for registeration
 - Using Django built-in PasswordResetTokenGenerator for sending email active code
