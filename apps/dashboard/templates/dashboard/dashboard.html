@@ -1,0 +1,133 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            </div>
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">
+                <svg class="bi">
+                    <use xlink:href="#calendar3"/>
+                </svg>
+                This week
+            </button>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Expenses</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My expenses</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'add_expense' %}" class="btn btn-primary">New expense</a>
+            </div>
+        </div>
+    </div>
+
+    {% include 'core/partials/message.html' with messages_class='col-md-6' %}
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <a class="btn btn-close-white" href="{% url 'export_to_pdf' %}">Export to PDF</a>
+            <a class="btn btn-close-white" href="{% url 'export_to_csv' %}">Export to CSV</a>
+            <a class="btn btn-close-white" href="{% url 'export_to_excel' %}">Export to Excel</a>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="text" class="form-control" id="searchField" placeholder="Search">
+            </div>
+        </div>
+    </div>
+
+    {% if expenses.count > 0 %}
+        <div class="app-table mt-4">
+            <table class="table table-stripped table-hover">
+                <thead>
+                <tr>
+                    <th>Amount ({{ preference.currency|slice:3 }})</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Modify</th>
+                    <th>Remove</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.date }}</td>
+                        <td>
+                            <a href="{% url 'edit_expense' expense_id=expense.id %}" class="btn btn-secondary btn-sm">Edit</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'delete_expense' expense_id=expense.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="no-results" style="display: none;">No results found</p>
+        <div class="table-output">
+            <table class="table table-stripped table-hover">
+                <thead>
+                <tr>
+                    <th>Amount ({{ currency|slice:3 }})</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody class="table-body">
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info mt-5" role="alert">
+            There aren't any records yet ...
+        </div>
+    {% endif %}
+
+    <div class="pagination-container">
+        <div class="">
+            Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </div>
+        <ul class="pagination align-right float-end me-auto">
+            {% if page_obj.has_previous %}
+                <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link"
+                                                                                          href="?page=1">&laquo; 1</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link"
+                                         href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}
+                    &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <script src="{% static 'js/search-expense.js' %}"></script>
+{% endblock %}

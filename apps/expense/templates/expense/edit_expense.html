@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Edit {{ expense.category }}{% endblock %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'add_expense' %}">Expenses</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit expenses</li>
+            </ol>
+        </nav>
+
+        {% include 'core/partials/message.html' %}
+
+        <form action="{% url 'edit_expense' expense_id=expense.id %}" method="post">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="">Amount</label>
+                        <input type="number" value="{{ values.amount }}" class="form-control" name="amount">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="">Description</label>
+                        <input type="text" value="{{ values.description }}" class="form-control" name="description">
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="">Category</label>
+                        <select name="category" id="" class="form-select">
+                            <option selected name="category"
+                                    value="{{ values.category }}">{{ values.category }}</option>
+                            {% for category in categories %}
+                                <option name="category" value="{{ category.name }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-group mt-4">
+                            <label for="">Date of expense</label>
+                            <input type="date" value="{{ values.date|date:'Y-m-d' }}" class="form-control" name="expense_date">
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input type="submit" value="Save" class="btn btn-primary btn-sm mt-4">
+                        <a href="{% url 'delete_expense' expense_id=expense.id %}" class="btn btn-danger btn-sm mt-4">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

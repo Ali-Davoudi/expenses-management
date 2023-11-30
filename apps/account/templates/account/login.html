@@ -1,0 +1,56 @@
+{% extends 'core/base_account.html' %}
+{% load static %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <div class="card-title py-3">
+                        <h4>Sign in</h4>
+                    </div>
+
+                    {% include 'core/partials/message.html' %}
+
+                    <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input
+                                    type="text"
+                                    name="username"
+                                    placeholder="username"
+                                    id="username-field"
+                                    class="form-control form-control-sm"
+                                    value="{{ field_value.username }}"
+                            />
+                        </div>
+                        <div class="validate-username-feedback" style="display: none"></div>
+                        <small class="text-sm py-1 text-info username-checking"></small>
+                        <div class="form-group mt-4">
+                            <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    class="form-control form-control-sm"
+                                    id="password-field"
+                            />
+                            <small class="float-end mt-2 show-password-toggle">SHOW</small>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'forget_password' %}">Forget password? Click here</a>
+                        </div>
+                        <div class="d-grid gap-2 mt-5">
+                            <input type="submit" value="Sign in" class="btn btn-primary btn-submit"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+
+    <script src="{% static 'js/login.js' %}"></script>
+{% endblock %}
